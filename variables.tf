@@ -52,6 +52,18 @@ variable "subnets" {
   default     = {}
 }
 
+variable "create_pip" {
+  description = "If true, public IP will be created"
+  type        = bool
+  default     = true
+}
+
+variable "pip_zone_id" {
+  description = "Public IP zone"
+  type        = string
+  default     = "ru-central1-a"
+}
+
 #
 # logging
 #

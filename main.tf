@@ -54,8 +54,7 @@ resource "yandex_alb_load_balancer" "main" {
           dynamic "external_ipv4_address" {
             for_each = l.value["address"] == "ipv4pub" ? [1] : []
             content {
-              # TODO
-              # address = yandex_vpc_address.pip[listener.key].address
+              address = yandex_vpc_address.pip[0].external_ipv4_address[0].address
             }
           }
 
@@ -64,6 +63,7 @@ resource "yandex_alb_load_balancer" "main" {
             content {}
           }
         }
+
         ports = l.value["ports"]
       }
 
@@ -121,7 +121,9 @@ resource "yandex_alb_load_balancer" "main" {
               http_router_id = yandex_alb_http_router.main[l.key].id
               allow_http10   = true
             }
-            certificate_ids = l.value["cert"]["type"] == "existing" ? l.value["cert"]["ids"] : [yandex_cm_certificate.main[l.key].id]
+            certificate_ids = l.value["cert"]["type"] == "existing" ? l.value["cert"]["ids"] : [
+              yandex_cm_certificate.main[l.key].id
+            ]
           }
         }
       }
@@ -138,7 +140,9 @@ resource "yandex_alb_load_balancer" "main" {
               allow_http10   = false
               http_router_id = yandex_alb_http_router.main[l.key].id
             }
-            certificate_ids = l.value["cert"]["type"] == "existing" ? l.value["cert"]["ids"] : [yandex_cm_certificate.main[l.key].id]
+            certificate_ids = l.value["cert"]["type"] == "existing" ? l.value["cert"]["ids"] : [
+              yandex_cm_certificate.main[l.key].id
+            ]
           }
         }
       }
@@ -201,7 +205,7 @@ resource "yandex_alb_backend_group" "http" {
     for k, v in var.listeners : k => v if v["type"] == "http" || v["type"] == "http2"
   }
 
-  name        = each.key
+  name        = format("%s-%s", var.name, each.key)
   description = var.description
   folder_id   = var.folder_id
   labels      = var.labels
@@ -213,8 +217,13 @@ resource "yandex_alb_backend_group" "http" {
     http2            = each.value["backend"]["http2"]
     target_group_ids = each.value["backend"]["target_group_ids"]
 
-    # TODO: temporary unsupported
-    # load_balancing_config {}
+    # TODO: temporary hardcoded
+    load_balancing_config {
+      locality_aware_routing_percent = 0
+      mode                           = "ROUND_ROBIN"
+      panic_threshold                = 0
+      strict_locality                = false
+    }
 
     healthcheck {
       timeout                 = each.value["backend"]["health_check"]["timeout"]

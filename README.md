@@ -46,6 +46,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_create_pip"></a> [create\_pip](#input\_create\_pip) | If true, public IP will be created | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | ALB description | `string` | `""` | no |
 | <a name="input_discard_rules"></a> [discard\_rules](#input\_discard\_rules) | List of logs discard rules | <pre>object({<br>    http_codes          = optional(list(string), [])<br>    http_code_intervals = optional(number)<br>    grpc_codes          = optional(list(string), [])<br>  })</pre> | `null` | no |
 | <a name="input_enable_logs"></a> [enable\_logs](#input\_enable\_logs) | Set to true to disable Cloud Logging for the balancer | `bool` | `true` | no |
@@ -55,6 +56,7 @@ No modules.
 | <a name="input_log_group_id"></a> [log\_group\_id](#input\_log\_group\_id) | Cloud Logging group ID to send logs to. Leave empty to use the balancer folder default log group | `string` | `""` | no |
 | <a name="input_name"></a> [name](#input\_name) | ALB name | `string` | n/a | yes |
 | <a name="input_network_id"></a> [network\_id](#input\_network\_id) | ID of the network that the ALB is located at | `string` | n/a | yes |
+| <a name="input_pip_zone_id"></a> [pip\_zone\_id](#input\_pip\_zone\_id) | Public IP zone | `string` | `"ru-central1-a"` | no |
 | <a name="input_region_id"></a> [region\_id](#input\_region\_id) | ID of the availability zone where the ALB resides | `string` | `null` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | A list of ID's of security groups attached to the ALB | `list(string)` | `[]` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | `map` | `{}` | no |
