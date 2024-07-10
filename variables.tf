@@ -1,98 +1,98 @@
 #
-# yandex cloud coordinates
+# Координаты облака Yandex
 #
 variable "folder_id" {
-  description = "Folder ID"
-  type        = string
-  default     = null
+description = "Идентификатор папки"
+type        = string
+default     = null
 }
 
 variable "region_id" {
-  description = "ID of the availability zone where the ALB resides"
-  type        = string
-  default     = null
+description = "Идентификатор зоны доступности, где находится ALB"
+type        = string
+default     = null
 }
 
 #
-# naming
+# Именование
 #
 variable "name" {
-  description = "ALB name"
-  type        = string
+description = "Имя ALB"
+type        = string
 }
 
 variable "description" {
-  description = "ALB description"
-  type        = string
-  default     = ""
+description = "Описание ALB"
+type        = string
+default     = ""
 }
 
 variable "labels" {
-  description = "A set of labels"
-  type        = map(string)
-  default     = {}
+description = "Набор меток"
+type        = map(string)
+default     = {}
 }
 
 #
-# network
+# Сеть
 #
 variable "network_id" {
-  description = "ID of the network that the ALB is located at"
-  type        = string
+description = "Идентификатор сети, в которой находится ALB"
+type        = string
 }
 
 variable "security_group_ids" {
-  description = "A list of ID's of security groups attached to the ALB"
-  type        = list(string)
-  default     = []
+description = "Список идентификаторов групп безопасности, присоединенных к ALB"
+type        = list(string)
+default     = []
 }
 
 variable "subnets" {
-  description = "List of subnets"
-  default     = {}
+description = "Список подсетей"
+default     = {}
 }
 
 variable "create_pip" {
-  description = "If true, public IP will be created"
-  type        = bool
-  default     = true
+description = "Если true, будет создан публичный IP"
+type        = bool
+default     = true
 }
 
 variable "pip_zone_id" {
-  description = "Public IP zone"
-  type        = string
-  default     = "ru-central1-a"
+description = "Зона для публичного IP"
+type        = string
+default     = "ru-central1-a"
 }
 
 #
-# logging
+# Логирование
 #
 variable "enable_logs" {
-  description = "Set to true to disable Cloud Logging for the balancer"
-  type        = bool
-  default     = true
+description = "Установите true, чтобы отключить Cloud Logging для балансировщика"
+type        = bool
+default     = true
 }
 
 variable "log_group_id" {
-  description = "Cloud Logging group ID to send logs to. Leave empty to use the balancer folder default log group"
-  type        = string
-  default     = ""
+description = "Идентификатор группы Cloud Logging для отправки логов. Оставьте пустым, чтобы использовать группу логов по умолчанию для папки балансировщика"
+type        = string
+default     = ""
 }
 
 variable "discard_rules" {
-  description = "List of logs discard rules"
-  type = object({
-    http_codes          = optional(list(string), [])
-    http_code_intervals = optional(number)
-    grpc_codes          = optional(list(string), [])
-  })
-  default = null
+description = "Список правил игнорирования логов"
+type = object({
+http_codes          = optional(list(string), [])
+http_code_intervals = optional(number)
+grpc_codes          = optional(list(string), [])
+})
+default = null
 }
 
 #
-# load balancer configuration
+# Конфигурация балансировщика нагрузки
 #
 variable "listeners" {
-  description = "Application load balancer listeners"
-  default     = {}
+description = "Слушатели балансировщика нагрузки приложений"
+default     = {}
 }

@@ -1,30 +1,34 @@
+# Создание Yandex Application Load Balancer (ALB) с указанными параметрами
 resource "yandex_alb_load_balancer" "main" {
-  name        = var.name
-  description = var.description
-  folder_id   = var.folder_id
-  labels      = var.labels
+  name        = var.name  # Имя балансировщика
+  description = var.description  # Описание балансировщика
+  folder_id   = var.folder_id  # Идентификатор папки в Yandex Cloud
+  labels      = var.labels  # Метки для балансировщика
 
-  region_id = var.region_id
+  region_id = var.region_id  # Идентификатор региона
 
-  network_id         = var.network_id
-  security_group_ids = var.security_group_ids
+  network_id         = var.network_id  # Идентификатор сети
+  security_group_ids = var.security_group_ids  # Список идентификаторов групп безопасности
 
+  # Настройка политики распределения
   allocation_policy {
     dynamic "location" {
-      for_each = var.subnets
+      for_each = var.subnets  # Для каждой подсети
 
       content {
-        zone_id         = location.value["zone_id"]
-        subnet_id       = location.value["id"]
-        disable_traffic = location.value["disable_traffic"]
+        zone_id         = location.value["zone_id"]  # Идентификатор зоны
+        subnet_id       = location.value["id"]  # Идентификатор подсети
+        disable_traffic = location.value["disable_traffic"]  # Флаг отключения трафика
       }
     }
   }
 
+  # Настройка опций логирования
   log_options {
-    disable      = !var.enable_logs
-    log_group_id = var.log_group_id
+    disable      = !var.enable_logs  # Флаг отключения логирования
+    log_group_id = var.log_group_id  # Идентификатор группы логирования
 
+    # Динамическая настройка правил игнорирования логов
     dynamic "discard_rule" {
       for_each = var.discard_rules != null ? [1] : []
       content {
@@ -35,12 +39,13 @@ resource "yandex_alb_load_balancer" "main" {
     }
   }
 
+  # Динамическая настройка слушателей
   dynamic "listener" {
     for_each = var.listeners
     iterator = l
 
     content {
-      name = l.key
+      name = l.key  # Имя слушателя
 
       endpoint {
         address {
@@ -64,10 +69,10 @@ resource "yandex_alb_load_balancer" "main" {
           }
         }
 
-        ports = l.value["ports"]
+        ports = l.value["ports"]  # Порты слушателя
       }
 
-      # HTTP -> HTTPS
+      # Перенаправление HTTP -> HTTPS
       dynamic "http" {
         for_each = l.value["type"] == "redirect" && !l.value["tls"] ? [1] : []
         content {
@@ -77,7 +82,7 @@ resource "yandex_alb_load_balancer" "main" {
         }
       }
 
-      # Plain HTTP
+      # Простой HTTP
       dynamic "http" {
         for_each = l.value["type"] == "http" && !l.value["tls"] ? [1] : []
         content {
@@ -88,7 +93,7 @@ resource "yandex_alb_load_balancer" "main" {
         }
       }
 
-      # Plain HTTP2
+      # Простой HTTP2
       dynamic "http" {
         for_each = l.value["type"] == "http2" && !l.value["tls"] ? [1] : []
         content {
@@ -102,7 +107,7 @@ resource "yandex_alb_load_balancer" "main" {
         }
       }
 
-      # Plain stream
+      # Простой stream
       dynamic "stream" {
         for_each = l.value["type"] == "stream" && !l.value["tls"] ? [1] : []
         content {
@@ -161,13 +166,14 @@ resource "yandex_alb_load_balancer" "main" {
   }
 }
 
+# Создание виртуального хоста для каждого слушателя типа HTTP или HTTP2
 resource "yandex_alb_virtual_host" "main" {
   for_each = {
     for k, v in var.listeners : k => v if v["type"] == "http" || v["type"] == "http2"
   }
 
-  name           = format("%s-%s", var.name, each.key)
-  http_router_id = yandex_alb_http_router.main[each.key].id
+  name           = format("%s-%s", var.name, each.key)  # Имя виртуального хоста
+  http_router_id = yandex_alb_http_router.main[each.key].id  # Идентификатор HTTP роутера
 
   # TODO: temporary unsupported args
   # authority
@@ -175,11 +181,11 @@ resource "yandex_alb_virtual_host" "main" {
   # modify_response_headers
 
   route {
-    name = "default"
+    name = "default"  # Имя маршрута по умолчанию
     http_route {
       http_route_action {
-        backend_group_id = yandex_alb_backend_group.http[each.key].id
-        timeout          = "3s"
+        backend_group_id = yandex_alb_backend_group.http[each.key].id  # Идентификатор группы бэкендов
+        timeout          = "3s"  # Таймаут маршрута
       }
     }
 
@@ -188,34 +194,35 @@ resource "yandex_alb_virtual_host" "main" {
   }
 }
 
+# Создание HTTP роутера для каждого слушателя типа HTTP или HTTP2
 resource "yandex_alb_http_router" "main" {
   for_each = {
     for k, v in var.listeners : k => v if v["type"] == "http" || v["type"] == "http2"
   }
 
-  name        = format("%s-%s", var.name, each.key)
-  description = var.description
-  folder_id   = var.folder_id
-  labels      = var.labels
+  name        = format("%s-%s", var.name, each.key)  # Имя HTTP роутера
+  description = var.description  # Описание HTTP роутера
+  folder_id   = var.folder_id  # Идентификатор папки в Yandex Cloud
+  labels      = var.labels  # Метки для HTTP роутера
 }
 
-
+# Создание группы бэкендов для каждого слушателя типа HTTP или HTTP2
 resource "yandex_alb_backend_group" "http" {
   for_each = {
     for k, v in var.listeners : k => v if v["type"] == "http" || v["type"] == "http2"
   }
 
-  name        = format("%s-%s", var.name, each.key)
-  description = var.description
-  folder_id   = var.folder_id
-  labels      = var.labels
+  name        = format("%s-%s", var.name, each.key)  # Имя группы бэкендов
+  description = var.description  # Описание группы бэкендов
+  folder_id   = var.folder_id  # Идентификатор папки в Yandex Cloud
+  labels      = var.labels  # Метки для группы бэкендов
 
   http_backend {
-    name             = each.value["backend"]["name"]
-    port             = each.value["backend"]["port"]
-    weight           = each.value["backend"]["weight"]
-    http2            = each.value["backend"]["http2"]
-    target_group_ids = each.value["backend"]["target_group_ids"]
+    name             = each.value["backend"]["name"]  # Имя бэкенда
+    port             = each.value["backend"]["port"]  # Порт бэкенда
+    weight           = each.value["backend"]["weight"]  # Вес бэкенда
+    http2            = each.value["backend"]["http2"]  # Флаг использования HTTP2
+    target_group_ids = each.value["backend"]["target_group_ids"]  # Идентификаторы целевых групп
 
     # TODO: temporary hardcoded
     load_balancing_config {
@@ -226,17 +233,17 @@ resource "yandex_alb_backend_group" "http" {
     }
 
     healthcheck {
-      timeout                 = each.value["backend"]["health_check"]["timeout"]
-      interval                = each.value["backend"]["health_check"]["interval"]
-      interval_jitter_percent = lookup(each.value["backend"]["health_check"], "interval_jitter_percent", null)
-      healthy_threshold       = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)
-      unhealthy_threshold     = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)
-      healthcheck_port        = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)
+      timeout                 = each.value["backend"]["health_check"]["timeout"]  # Таймаут проверки
+      interval                = each.value["backend"]["health_check"]["interval"]  # Интервал проверки
+      interval_jitter_percent = lookup(each.value["backend"]["health_check"], "interval_jitter_percent", null)  # Процент джиттера интервала
+      healthy_threshold       = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)  # Порог здоровья
+      unhealthy_threshold     = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)  # Порог нездоровья
+      healthcheck_port        = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)  # Порт проверки
 
       http_healthcheck {
         # host = ""
-        path  = each.value["backend"]["health_check"]["http"]["path"]
-        http2 = each.value["type"] == "http2" ? true : false
+        path  = each.value["backend"]["health_check"]["http"]["path"]  # Путь проверки
+        http2 = each.value["type"] == "http2" ? true : false  # Флаг использования HTTP2
       }
     }
 
@@ -245,32 +252,33 @@ resource "yandex_alb_backend_group" "http" {
   }
 }
 
+# Создание группы бэкендов для каждого слушателя типа stream
 resource "yandex_alb_backend_group" "streams" {
   for_each = {
     for k, v in var.listeners : k => v if v["type"] == "stream"
   }
 
-  name        = each.key
-  description = var.description
-  folder_id   = var.folder_id
-  labels      = var.labels
+  name        = each.key  # Имя группы бэкендов
+  description = var.description  # Описание группы бэкендов
+  folder_id   = var.folder_id  # Идентификатор папки в Yandex Cloud
+  labels      = var.labels  # Метки для группы бэкендов
 
   stream_backend {
-    name             = each.value["backend"]["name"]
-    port             = each.value["backend"]["port"]
-    weight           = each.value["backend"]["weight"]
-    target_group_ids = each.value["backend"]["target_group_ids"]
+    name             = each.value["backend"]["name"]  # Имя бэкенда
+    port             = each.value["backend"]["port"]  # Порт бэкенда
+    weight           = each.value["backend"]["weight"]  # Вес бэкенда
+    target_group_ids = each.value["backend"]["target_group_ids"]  # Идентификаторы целевых групп
 
     # TODO: temporary unsupported
     # load_balancing_config {}
 
     healthcheck {
-      timeout                 = each.value["backend"]["health_check"]["timeout"]
-      interval                = each.value["backend"]["health_check"]["interval"]
-      interval_jitter_percent = lookup(each.value["backend"]["health_check"], "interval_jitter_percent", null)
-      healthy_threshold       = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)
-      unhealthy_threshold     = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)
-      healthcheck_port        = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)
+      timeout                 = each.value["backend"]["health_check"]["timeout"]  # Таймаут проверки
+      interval                = each.value["backend"]["health_check"]["interval"]  # Интервал проверки
+      interval_jitter_percent = lookup(each.value["backend"]["health_check"], "interval_jitter_percent", null)  # Процент джиттера интервала
+      healthy_threshold       = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)  # Порог здоровья
+      unhealthy_threshold     = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)  # Порог нездоровья
+      healthcheck_port        = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)  # Порт проверки
 
       # TODO: temporary unsupported
       #      stream_healthcheck {
