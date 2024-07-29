@@ -1,3 +1,47 @@
+data "yandex_client_config" "client" {}
+
+module "network" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v1.0.0"
+
+  folder_id = data.yandex_client_config.client.folder_id
+
+  blank_name = "vpc-nat-gateway"
+  labels = {
+    repo = "terraform-yacloud-modules/terraform-yandex-vpc"
+  }
+
+  azs = ["ru-central1-a"]
+
+  private_subnets = [["10.4.0.0/24"]]
+
+  create_vpc         = true
+  create_nat_gateway = true
+}
+
+module "seggroups" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-security-group.git?ref=v1.0.0"
+
+  folder_id   = data.yandex_client_config.client.folder_id
+  vpc_id      = module.network.vpc_id
+  blank_name  = "your-security-group-name"
+  description = "Your security group description"
+  labels = {
+    "key1" = "value1"
+    "key2" = "value2"
+  }
+
+  ingress_rules = {
+    "rule1" = {
+      protocol       = "tcp"
+      description    = "Allow TCP traffic from 0.0.0.0/0"
+      from_port      = 0
+      to_port        = 65535
+      v4_cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+}
+
+
 module "alb" {
   source = "../"
 
