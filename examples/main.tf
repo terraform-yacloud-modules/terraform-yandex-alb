@@ -42,6 +42,19 @@ module "seggroups" {
 }
 
 
+module "self_managed" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git"
+
+  self_managed = {
+    domain-com = {
+      description = "self-managed domain certificate from file"
+      certificate = file("cert.pem")
+      private_key = file("key.pem")
+    }
+  }
+}
+
+
 module "alb" {
   source = "../"
 
@@ -99,7 +112,7 @@ module "alb" {
       tls     = true
       cert = {
         type   = "existing"
-        ids    = ["fpqiie14o3cbf8jk2kp6"]
+        ids    = [module.self_managed.self_managed_certificates["domain-com"].id]
         domain = "my.ru"
       }
       backend = {
