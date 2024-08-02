@@ -35,7 +35,6 @@ Note that this example may create resources which can cost money. Run `terraform
 | <a name="module_iam_accounts"></a> [iam\_accounts](#module\_iam\_accounts) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account | v1.0.0 |
 | <a name="module_instance_group"></a> [instance\_group](#module\_instance\_group) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git | n/a |
 | <a name="module_network"></a> [network](#module\_network) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git | v1.0.0 |
-| <a name="module_seggroups"></a> [seggroups](#module\_seggroups) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-security-group.git | v1.0.0 |
 | <a name="module_self_managed"></a> [self\_managed](#module\_self\_managed) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git | n/a |
 
 ## Resources
@@ -52,8 +51,10 @@ No inputs.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_alb_id"></a> [alb\_id](#output\_alb\_id) | Application Load Balancer ID |
+| <a name="output_alb_name"></a> [alb\_name](#output\_alb\_name) | Application Load Balancer name |
 | <a name="output_domain_com_certificate"></a> [domain\_com\_certificate](#output\_domain\_com\_certificate) | Certificate details for domain-com |
-| <a name="output_id"></a> [id](#output\_id) | n/a |
+| <a name="output_domain_com_certificate_id"></a> [domain\_com\_certificate\_id](#output\_domain\_com\_certificate\_id) | ID of the self-managed certificate for domain-com |
 | <a name="output_instance_group_id"></a> [instance\_group\_id](#output\_instance\_group\_id) | Compute instance group ID |
 | <a name="output_target_group_id"></a> [target\_group\_id](#output\_target\_group\_id) | Target group ID |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

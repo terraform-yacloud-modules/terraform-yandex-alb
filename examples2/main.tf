@@ -5,14 +5,14 @@ module "network" {
 
   folder_id = data.yandex_client_config.client.folder_id
 
-  blank_name = "vpc-nat-gateway"
+  blank_name = "alb-vpc-nat-gateway"
   labels = {
     repo = "terraform-yacloud-modules/terraform-yandex-vpc"
   }
 
   azs = ["ru-central1-a"]
 
-  private_subnets = [["10.4.0.0/24"]]
+  private_subnets = [["10.2.0.0/24"]]
 
   create_vpc         = true
   create_nat_gateway = true
@@ -50,7 +50,7 @@ module "instance_group" {
 
   zones = ["ru-central1-a"]
 
-  name = "example-instance-group"
+  name = "example-alb-instance-group"
 
   network_id = module.network.vpc_id
   subnet_ids = [module.network.private_subnets_ids[0]]
@@ -84,7 +84,7 @@ module "instance_group" {
 
   enable_alb_integration = true
 
-  hostname           = "my-instance"
+  hostname           = "example-alb-instance"
   service_account_id = module.iam_accounts.id
   ssh_user           = "ubuntu"
   generate_ssh_key   = false
