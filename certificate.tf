@@ -8,7 +8,7 @@ resource "tls_private_key" "self_signed" {
 
 resource "tls_self_signed_cert" "self_signed" {
   for_each = {
-    for k, v in var.listeners : k => v if v["tls"] && v["cert"]["type"] == "self_signed"
+    for k, v in var.listeners : k => v if v["tls"] && try(v["cert"]["type"], "") == "self_signed"
   }
 
   private_key_pem = tls_private_key.self_signed[each.key].private_key_pem
@@ -24,7 +24,7 @@ resource "tls_self_signed_cert" "self_signed" {
 
 resource "yandex_cm_certificate" "main" {
   for_each = {
-    for k, v in var.listeners : k => v if(v["tls"] && (v["cert"]["type"] == "self_signed" || v["cert"]["type"] == "letsencrypt"))
+    for k, v in var.listeners : k => v if v["tls"] && contains(["self_signed", "letsencrypt"], try(v["cert"]["type"], ""))
   }
 
   name        = format("%s-%s", var.name, each.key)
