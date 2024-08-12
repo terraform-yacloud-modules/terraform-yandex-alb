@@ -96,3 +96,9 @@ variable "listeners" {
   description = "Application load balancer listeners"
   default     = {}
 }
+
+variable "external_ipv4_address" {
+  description = "External IPv4 address for the load balancer"
+  type        = string
+  default     = null
+}

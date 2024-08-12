@@ -54,7 +54,7 @@ resource "yandex_alb_load_balancer" "main" {
           dynamic "external_ipv4_address" {
             for_each = l.value["address"] == "ipv4pub" ? [1] : []
             content {
-              address = yandex_vpc_address.pip[0].external_ipv4_address[0].address
+              address = var.external_ipv4_address != null ? var.external_ipv4_address : yandex_vpc_address.pip[0].external_ipv4_address[0].address
             }
           }
 
@@ -198,7 +198,6 @@ resource "yandex_alb_http_router" "main" {
   folder_id   = var.folder_id
   labels      = var.labels
 }
-
 
 resource "yandex_alb_backend_group" "http" {
   for_each = {
