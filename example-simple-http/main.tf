@@ -32,6 +32,13 @@ module "iam_accounts" {
 
 }
 
+module "address" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-address.git"
+
+  name    = "nlb-pip"
+  zone_id = "ru-central1-a"
+}
+
 module "instance_group" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git"
 
@@ -100,6 +107,29 @@ module "instance_group" {
   depends_on = [module.iam_accounts]
 }
 
+module "dns_zone" {
+
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-dns.git//modules/zone?ref=v1.0.0"
+
+  name        = "my-private-zone"
+  description = "desc"
+
+  zone             = "apatsev.org.ru."
+  is_public        = true
+  private_networks = [module.network.vpc_id]
+}
+
+module "dns_recordset" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-dns.git//modules/recordset?ref=v1.0.0"
+
+  zone_id = module.dns_zone.id
+  name    = "test.apatsev.org.ru."
+  type    = "A"
+  ttl     = 200
+  data    = [module.address.external_ipv4_address]
+}
+
+
 module "alb" {
   source = "../"
 
@@ -109,6 +139,8 @@ module "alb" {
   region_id = "ru-central1"
 
   network_id = module.network.vpc_id
+
+  external_ipv4_address = module.address.external_ipv4_address
 
   subnets = [
     {
@@ -120,7 +152,7 @@ module "alb" {
 
   listeners = {
     http = {
-      address = "ipv4prv"
+      address = "ipv4pub"
       zone_id = "ru-central1-b"
       ports   = [80]
       type    = "http"
