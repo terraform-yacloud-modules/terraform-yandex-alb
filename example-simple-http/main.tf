@@ -114,7 +114,7 @@ module "dns_zone" {
   name        = "my-private-zone"
   description = "desc"
 
-  zone             = "dns-zone.org.ru."
+  zone             = "apatsev.org.ru."
   is_public        = true
   private_networks = [module.network.vpc_id]
 }
@@ -123,7 +123,7 @@ module "dns_recordset" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-dns.git//modules/recordset?ref=v1.0.0"
 
   zone_id = module.dns_zone.id
-  name    = "test.dns-zone.org.ru."
+  name    = "test.apatsev.org.ru."
   type    = "A"
   ttl     = 200
   data    = [module.address.external_ipv4_address]
@@ -157,7 +157,7 @@ module "alb" {
       ports   = [80]
       type    = "http"
       tls     = false
-      authority = "test.dns-zone.org.ru"
+      authority = "test.apatsev.org.ru"
       backend = {
         name   = "app"
         port   = 80
