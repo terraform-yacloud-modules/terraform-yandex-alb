@@ -157,6 +157,7 @@ module "alb" {
       ports   = [80]
       type    = "http"
       tls     = false
+      authority = "test.apatsev.org.ru"
       backend = {
         name   = "app"
         port   = 80

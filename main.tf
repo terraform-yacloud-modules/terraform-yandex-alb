@@ -168,9 +168,9 @@ resource "yandex_alb_virtual_host" "main" {
 
   name           = format("%s-%s", var.name, each.key)
   http_router_id = yandex_alb_http_router.main[each.key].id
+  authority      = [each.value["authority"]]
 
   # TODO: temporary unsupported args
-  # authority
   # modify_request_headers
   # modify_response_headers
 
