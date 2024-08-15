@@ -52,6 +52,7 @@ No modules.
 | <a name="input_description"></a> [description](#input\_description) | ALB description | `string` | `""` | no |
 | <a name="input_discard_rules"></a> [discard\_rules](#input\_discard\_rules) | List of logs discard rules | <pre>object({<br>    http_codes          = optional(list(string), [])<br>    http_code_intervals = optional(number)<br>    grpc_codes          = optional(list(string), [])<br>  })</pre> | `null` | no |
 | <a name="input_enable_logs"></a> [enable\_logs](#input\_enable\_logs) | Set to true to disable Cloud Logging for the balancer | `bool` | `true` | no |
+| <a name="input_external_ipv4_address"></a> [external\_ipv4\_address](#input\_external\_ipv4\_address) | External IPv4 address for the load balancer | `string` | `null` | no |
 | <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | Folder ID | `string` | `null` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | A set of labels | `map(string)` | `{}` | no |
 | <a name="input_listeners"></a> [listeners](#input\_listeners) | Application load balancer listeners | `map` | `{}` | no |
@@ -68,6 +69,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_id"></a> [id](#output\_id) | Application Load Balancer ID |
+| <a name="output_load_balancer_ip"></a> [load\_balancer\_ip](#output\_load\_balancer\_ip) | IP address of the created load balancer |
 | <a name="output_name"></a> [name](#output\_name) | Application Load Balancer name |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
