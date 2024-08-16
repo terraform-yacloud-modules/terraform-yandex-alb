@@ -152,11 +152,11 @@ module "alb" {
 
   listeners = {
     http = {
-      address = "ipv4pub"
-      zone_id = "ru-central1-b"
-      ports   = [80]
-      type    = "http"
-      tls     = false
+      address   = "ipv4pub"
+      zone_id   = "ru-central1-b"
+      ports     = [80]
+      type      = "http"
+      tls       = false
       authority = "test.apatsev.org.ru"
       backend = {
         name   = "app"
