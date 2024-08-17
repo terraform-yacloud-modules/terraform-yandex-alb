@@ -170,9 +170,25 @@ resource "yandex_alb_virtual_host" "main" {
   http_router_id = yandex_alb_http_router.main[each.key].id
   authority      = [each.value["authority"]]
 
-  # TODO: temporary unsupported args
-  # modify_request_headers
-  # modify_response_headers
+  dynamic "modify_request_headers" {
+    for_each = try(each.value["modify_request_headers"], [])
+    content {
+      name    = modify_request_headers.value["name"]
+      append  = lookup(modify_request_headers.value, "append", null)
+      replace = lookup(modify_request_headers.value, "replace", null)
+      remove  = lookup(modify_request_headers.value, "remove", null)
+    }
+  }
+
+  dynamic "modify_response_headers" {
+    for_each = try(each.value["modify_response_headers"], [])
+    content {
+      name    = modify_response_headers.value["name"]
+      append  = lookup(modify_response_headers.value, "append", null)
+      replace = lookup(modify_response_headers.value, "replace", null)
+      remove  = lookup(modify_response_headers.value, "remove", null)
+    }
+  }
 
   route {
     name = "default"
