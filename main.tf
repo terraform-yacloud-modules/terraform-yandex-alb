@@ -54,7 +54,7 @@ resource "yandex_alb_load_balancer" "main" {
           dynamic "external_ipv4_address" {
             for_each = l.value["address"] == "ipv4pub" ? [1] : []
             content {
-              address = var.external_ipv4_address != null ? var.external_ipv4_address : yandex_vpc_address.pip[0].external_ipv4_address[0].address
+              address = var.external_ipv4_address != "" ? var.external_ipv4_address : yandex_vpc_address.pip[0].external_ipv4_address[0].address
             }
           }
 
