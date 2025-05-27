@@ -148,22 +148,22 @@ module "alb" {
       }
 
       backend = {
-        name   = "web-backend"
-        port   = 8080
-        weight = 1
+        name   = "app"
+        port   = 80
+        weight = 100
         http2  = true
         target_group_ids = [
           module.instance_group.target_group_id
         ]
 
         health_check = {
-          timeout             = "5s"
-          interval            = "10s"
-          healthy_threshold   = 2
-          unhealthy_threshold = 3
+          timeout             = "30s"
+          interval            = "60s"
+          healthy_threshold   = 1
+          unhealthy_threshold = 1
 
           http = {
-            path = "/health"
+            path = "/"
           }
         }
       }
