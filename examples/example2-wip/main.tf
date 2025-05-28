@@ -18,6 +18,19 @@ module "network" {
   create_nat_gateway = true
 }
 
+
+module "self_managed" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git"
+
+  self_managed = {
+    domain-com = {
+      description = "self-managed domain certificate from file"
+      certificate = file("cert.pem")
+      private_key = file("key.pem")
+    }
+  }
+}
+
 module "iam_accounts" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
 
@@ -100,25 +113,12 @@ module "instance_group" {
   depends_on = [module.iam_accounts]
 }
 
-module "self_managed" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git"
-
-  self_managed = {
-    domain-com = {
-      description = "self-managed domain certificate from file"
-      certificate = file("cert.pem")
-      private_key = file("key.pem")
-    }
-  }
-}
-
 module "alb" {
-  source = "../"
+  source = "../.."
 
-  name   = "my-alb-http2"
+  name   = "example"
   labels = {}
 
-  folder_id = data.yandex_client_config.client.folder_id
   region_id = "ru-central1"
 
   network_id = module.network.vpc_id
@@ -131,23 +131,18 @@ module "alb" {
     }
   ]
 
-  create_pip   = true
-  pip_zone_id  = "ru-central1-a"
-
   listeners = {
-    web = {
-      type      = "http2"
-      address   = "ipv4pub"
-      ports     = [443]
-      tls       = true
-      authority = "domain.com"
-
+    https = {
+      address = "ipv4prv"
+      zone_id = "ru-central1-b"
+      ports   = ["443"]
+      type    = "http"
+      tls     = true
       cert = {
         type   = "existing"
         ids    = [module.self_managed.self_managed_certificates["domain-com"].id]
         domain = "domain.com"
       }
-
       backend = {
         name   = "app"
         port   = 80
@@ -156,39 +151,19 @@ module "alb" {
         target_group_ids = [
           module.instance_group.target_group_id
         ]
-
         health_check = {
-          timeout             = "30s"
-          interval            = "60s"
-          healthy_threshold   = 1
-          unhealthy_threshold = 1
-
+          timeout                 = "30s"
+          interval                = "60s"
+          interval_jitter_percent = 0
+          healthy_threshold       = 1
+          unhealthy_threshold     = 1
+          healthcheck_port        = 80
           http = {
             path = "/"
           }
         }
       }
-
-      modify_request_headers = [
-        {
-          name    = "X-Forwarded-Proto"
-          replace = "https"
-        }
-      ]
-
-      modify_response_headers = [
-        {
-          name   = "X-Frame-Options"
-          append = "DENY"
-        }
-      ]
     }
 
-    redirect = {
-      type    = "redirect"
-      address = "ipv4pub"
-      ports   = [80]
-      tls     = false
-    }
   }
 }

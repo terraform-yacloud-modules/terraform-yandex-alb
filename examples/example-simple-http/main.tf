@@ -130,7 +130,7 @@ module "dns_recordset" {
 }
 
 module "alb" {
-  source = "../"
+  source = "../.."
 
   name   = "example"
   labels = {}

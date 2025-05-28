@@ -165,7 +165,7 @@ resource "null_resource" "wait_for_certificate" {
 }
 
 module "alb" {
-  source = "../"
+  source = "../.."
 
   name   = "example"
   labels = {}
