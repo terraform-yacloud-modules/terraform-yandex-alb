@@ -115,12 +115,13 @@ module "self_managed" {
 module "alb" {
   source = "../"
 
+  name   = "my-alb-http2"
+  labels = {}
+
   folder_id = data.yandex_client_config.client.folder_id
   region_id = "ru-central1"
 
-  name = "my-alb-http2"
-
-  network_id  = module.network.vpc_id
+  network_id = module.network.vpc_id
 
   subnets = [
     {
