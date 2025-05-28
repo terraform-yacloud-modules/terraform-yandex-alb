@@ -43,7 +43,7 @@ module "seggroups" {
 
 
 module "alb" {
-  source = "../"
+  source = "../.."
 
   name   = "example"
   labels = {}
