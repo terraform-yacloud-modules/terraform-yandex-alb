@@ -129,13 +129,13 @@ module "dns_recordset" {
   data    = [module.address.external_ipv4_address]
 }
 
-
 module "alb" {
   source = "../"
 
   name   = "example"
   labels = {}
 
+  folder_id = data.yandex_client_config.client.folder_id
   region_id = "ru-central1"
 
   network_id = module.network.vpc_id
@@ -178,6 +178,7 @@ module "alb" {
         target_group_ids = [
           module.instance_group.target_group_id
         ]
+
         health_check = {
           timeout                 = "30s"
           interval                = "60s"
