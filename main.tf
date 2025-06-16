@@ -47,14 +47,17 @@ resource "yandex_alb_load_balancer" "main" {
           dynamic "internal_ipv4_address" {
             for_each = l.value["address"] == "ipv4prv" ? [1] : []
             content {
-              subnet_id = lookup(l.value, "zone", null) != null ? l.value["zone"] : var.subnets[0].id
+              subnet_id = lookup(l.value, "zone", null) != null ?
+                l.value["zone"] : var.subnets[0].id
             }
           }
 
           dynamic "external_ipv4_address" {
             for_each = l.value["address"] == "ipv4pub" ? [1] : []
             content {
-              address = var.external_ipv4_address != "" ? var.external_ipv4_address : yandex_vpc_address.pip[0].external_ipv4_address[0].address
+              address = var.external_ipv4_address != "" ?
+                var.external_ipv4_address :
+                yandex_vpc_address.pip[0].external_ipv4_address[0].address
             }
           }
 
@@ -121,9 +124,10 @@ resource "yandex_alb_load_balancer" "main" {
               http_router_id = yandex_alb_http_router.main[l.key].id
               allow_http10   = true
             }
-            certificate_ids = l.value["cert"]["type"] == "existing" ? l.value["cert"]["ids"] : [
-              yandex_cm_certificate.main[l.key].id
-            ]
+            certificate_ids = l.value["cert"]["type"] == "existing" ?
+              l.value["cert"]["ids"] : [
+                yandex_cm_certificate.main[l.key].id
+              ]
           }
         }
       }
@@ -140,9 +144,10 @@ resource "yandex_alb_load_balancer" "main" {
               allow_http10   = false
               http_router_id = yandex_alb_http_router.main[l.key].id
             }
-            certificate_ids = l.value["cert"]["type"] == "existing" ? l.value["cert"]["ids"] : [
-              yandex_cm_certificate.main[l.key].id
-            ]
+            certificate_ids = l.value["cert"]["type"] == "existing" ?
+              l.value["cert"]["ids"] : [
+                yandex_cm_certificate.main[l.key].id
+              ]
           }
         }
       }
@@ -163,30 +168,31 @@ resource "yandex_alb_load_balancer" "main" {
 
 resource "yandex_alb_virtual_host" "main" {
   for_each = {
-    for k, v in var.listeners : k => v if v["type"] == "http" || v["type"] == "http2"
+    for k, v in var.listeners : k => v
+    if v["type"] == "http" || v["type"] == "http2"
   }
 
-  name           = format("%s-%s", var.name, each.key)
+  name = format("%s-%s", var.name, each.key)
   http_router_id = yandex_alb_http_router.main[each.key].id
-  authority      = [each.value["authority"]]
+  authority = [each.value["authority"]]
 
   dynamic "modify_request_headers" {
     for_each = try(each.value["modify_request_headers"], [])
     content {
-      name    = modify_request_headers.value["name"]
-      append  = lookup(modify_request_headers.value, "append", null)
+      name = modify_request_headers.value["name"]
+      append = lookup(modify_request_headers.value, "append", null)
       replace = lookup(modify_request_headers.value, "replace", null)
-      remove  = lookup(modify_request_headers.value, "remove", null)
+      remove = lookup(modify_request_headers.value, "remove", null)
     }
   }
 
   dynamic "modify_response_headers" {
     for_each = try(each.value["modify_response_headers"], [])
     content {
-      name    = modify_response_headers.value["name"]
-      append  = lookup(modify_response_headers.value, "append", null)
+      name = modify_response_headers.value["name"]
+      append = lookup(modify_response_headers.value, "append", null)
       replace = lookup(modify_response_headers.value, "replace", null)
-      remove  = lookup(modify_response_headers.value, "remove", null)
+      remove = lookup(modify_response_headers.value, "remove", null)
     }
   }
 
@@ -206,10 +212,11 @@ resource "yandex_alb_virtual_host" "main" {
 
 resource "yandex_alb_http_router" "main" {
   for_each = {
-    for k, v in var.listeners : k => v if v["type"] == "http" || v["type"] == "http2"
+    for k, v in var.listeners : k => v
+    if v["type"] == "http" || v["type"] == "http2"
   }
 
-  name        = format("%s-%s", var.name, each.key)
+  name = format("%s-%s", var.name, each.key)
   description = var.description
   folder_id   = var.folder_id
   labels      = var.labels
@@ -217,10 +224,11 @@ resource "yandex_alb_http_router" "main" {
 
 resource "yandex_alb_backend_group" "http" {
   for_each = {
-    for k, v in var.listeners : k => v if v["type"] == "http" || v["type"] == "http2"
+    for k, v in var.listeners : k => v
+    if v["type"] == "http" || v["type"] == "http2"
   }
 
-  name        = format("%s-%s", var.name, each.key)
+  name = format("%s-%s", var.name, each.key)
   description = var.description
   folder_id   = var.folder_id
   labels      = var.labels
@@ -241,17 +249,19 @@ resource "yandex_alb_backend_group" "http" {
     }
 
     healthcheck {
-      timeout                 = each.value["backend"]["health_check"]["timeout"]
-      interval                = each.value["backend"]["health_check"]["interval"]
+      timeout  = each.value["backend"]["health_check"]["timeout"]
+      interval = each.value["backend"]["health_check"]["interval"]
       interval_jitter_percent = lookup(each.value["backend"]["health_check"], "interval_jitter_percent", null)
-      healthy_threshold       = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)
-      unhealthy_threshold     = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)
-      healthcheck_port        = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)
+      healthy_threshold = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)
+      unhealthy_threshold = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)
+      healthcheck_port = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)
 
       http_healthcheck {
-        # host = ""
-        path  = each.value["backend"]["health_check"]["http"]["path"]
+        path = each.value["backend"]["health_check"]["http"]["path"]
+
+        host = try(each.value["backend"]["health_check"]["http"]["host"], null)
         http2 = each.value["type"] == "http2" ? true : false
+        expected_statuses = try(each.value["backend"]["health_check"]["expected_statuses"], null)
       }
     }
 
@@ -280,12 +290,12 @@ resource "yandex_alb_backend_group" "streams" {
     # load_balancing_config {}
 
     healthcheck {
-      timeout                 = each.value["backend"]["health_check"]["timeout"]
-      interval                = each.value["backend"]["health_check"]["interval"]
+      timeout  = each.value["backend"]["health_check"]["timeout"]
+      interval = each.value["backend"]["health_check"]["interval"]
       interval_jitter_percent = lookup(each.value["backend"]["health_check"], "interval_jitter_percent", null)
-      healthy_threshold       = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)
-      unhealthy_threshold     = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)
-      healthcheck_port        = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)
+      healthy_threshold = lookup(each.value["backend"]["health_check"], "healthy_threshold", null)
+      unhealthy_threshold = lookup(each.value["backend"]["health_check"], "unhealthy_threshold", null)
+      healthcheck_port = lookup(each.value["backend"]["health_check"], "healthcheck_port", null)
 
       # TODO: temporary unsupported
       #      stream_healthcheck {
