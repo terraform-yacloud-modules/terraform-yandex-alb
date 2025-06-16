@@ -49,12 +49,8 @@ variable "security_group_ids" {
 
 variable "subnets" {
   description = "List of subnets"
-  type = map(object({
-    zone_id         = optional(string, "ru-central1-a")
-    id              = optional(string, null)
-    disable_traffic = optional(bool, false)
-  }))
-  default = {}
+  type        = any
+  default     = {}
 }
 
 variable "create_pip" {

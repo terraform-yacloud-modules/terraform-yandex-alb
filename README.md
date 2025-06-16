@@ -62,7 +62,7 @@ No modules.
 | <a name="input_pip_zone_id"></a> [pip\_zone\_id](#input\_pip\_zone\_id) | Public IP zone | `string` | `"ru-central1-a"` | no |
 | <a name="input_region_id"></a> [region\_id](#input\_region\_id) | ID of the availability zone where the ALB resides | `string` | `null` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | A list of ID's of security groups attached to the ALB | `list(string)` | `[]` | no |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | <pre>map(object({<br/>    zone_id         = optional(string, "ru-central1-a")<br/>    id              = optional(string, null)<br/>    disable_traffic = optional(bool, false)<br/>  }))</pre> | `{}` | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | `any` | `{}` | no |
 
 ## Outputs
 
