@@ -190,9 +190,27 @@ resource "yandex_alb_virtual_host" "main" {
   route {
     name = "default"
     http_route {
+      #
+      # dynamic "direct_response_action" {
+      #   for_each = try(each.value["direct_response_action"], [])
+      #   content {
+      #     status_code = direct_response_action.value["status_code"]
+      #     body        = direct_response_action.value["body"]
+      #   }
+      # }
+
+      http_match {
+        path {
+          exact  = try(each.value["http_match"]["path"]["exact"], null)
+          prefix = try(each.value["http_match"]["path"]["prefix"], null)
+          regex  = try(each.value["http_match"]["path"]["regex"], null)
+        }
+        http_method = try(each.value["http_match"]["http_method"], [])
+      }
+
       http_route_action {
         backend_group_id = yandex_alb_backend_group.http[each.key].id
-        timeout          = "3s"
+        timeout          = try(each.value["http_route_action"]["timeout"], "3s")
       }
     }
 

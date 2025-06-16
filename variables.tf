@@ -49,7 +49,12 @@ variable "security_group_ids" {
 
 variable "subnets" {
   description = "List of subnets"
-  default     = {}
+  type = map(object({
+    zone_id         = optional(string, "ru-central1-a")
+    id              = optional(string, null)
+    disable_traffic = optional(bool, false)
+  }))
+  default = {}
 }
 
 variable "create_pip" {
@@ -94,6 +99,7 @@ variable "discard_rules" {
 #
 variable "listeners" {
   description = "Application load balancer listeners"
+  type        = any
   default     = {}
 }
 

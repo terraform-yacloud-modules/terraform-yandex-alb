@@ -55,14 +55,14 @@ No modules.
 | <a name="input_external_ipv4_address"></a> [external\_ipv4\_address](#input\_external\_ipv4\_address) | External IPv4 address for the load balancer | `string` | `null` | no |
 | <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | Folder ID | `string` | `null` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | A set of labels | `map(string)` | `{}` | no |
-| <a name="input_listeners"></a> [listeners](#input\_listeners) | Application load balancer listeners | `map` | `{}` | no |
+| <a name="input_listeners"></a> [listeners](#input\_listeners) | Application load balancer listeners | `any` | `{}` | no |
 | <a name="input_log_group_id"></a> [log\_group\_id](#input\_log\_group\_id) | Cloud Logging group ID to send logs to. Leave empty to use the balancer folder default log group | `string` | `""` | no |
 | <a name="input_name"></a> [name](#input\_name) | ALB name | `string` | n/a | yes |
 | <a name="input_network_id"></a> [network\_id](#input\_network\_id) | ID of the network that the ALB is located at | `string` | n/a | yes |
 | <a name="input_pip_zone_id"></a> [pip\_zone\_id](#input\_pip\_zone\_id) | Public IP zone | `string` | `"ru-central1-a"` | no |
 | <a name="input_region_id"></a> [region\_id](#input\_region\_id) | ID of the availability zone where the ALB resides | `string` | `null` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | A list of ID's of security groups attached to the ALB | `list(string)` | `[]` | no |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | `map` | `{}` | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | <pre>map(object({<br/>    zone_id         = optional(string, "ru-central1-a")<br/>    id              = optional(string, null)<br/>    disable_traffic = optional(bool, false)<br/>  }))</pre> | `{}` | no |
 
 ## Outputs
 
