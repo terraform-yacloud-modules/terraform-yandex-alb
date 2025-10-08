@@ -49,7 +49,12 @@ variable "security_group_ids" {
 
 variable "subnets" {
   description = "List of subnets"
-  default     = {}
+  type = list(object({
+    zone_id         = string
+    id              = string
+    disable_traffic = bool
+  }))
+  default = []
 }
 
 variable "create_pip" {
