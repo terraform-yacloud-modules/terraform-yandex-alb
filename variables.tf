@@ -49,7 +49,12 @@ variable "security_group_ids" {
 
 variable "subnets" {
   description = "List of subnets"
-  default     = {}
+  type = list(object({
+    zone_id         = string
+    id              = string
+    disable_traffic = bool
+  }))
+  default = []
 }
 
 variable "create_pip" {
@@ -94,7 +99,41 @@ variable "discard_rules" {
 #
 variable "listeners" {
   description = "Application load balancer listeners"
-  default     = {}
+  type = map(object({
+    address   = string
+    zone_id   = string
+    ports     = list(number)
+    type      = string
+    tls       = bool
+    authority = string
+    modify_request_headers = optional(list(object({
+      name   = string
+      append = string
+    })), [])
+    modify_response_headers = optional(list(object({
+      name   = string
+      append = string
+    })), [])
+    backend = object({
+      name             = string
+      port             = number
+      weight           = number
+      http2            = bool
+      target_group_ids = list(string)
+      health_check = object({
+        timeout                 = string
+        interval                = string
+        interval_jitter_percent = number
+        healthy_threshold       = number
+        unhealthy_threshold     = number
+        healthcheck_port        = number
+        http = object({
+          path = string
+        })
+      })
+    })
+  }))
+  default = {}
 }
 
 variable "external_ipv4_address" {
