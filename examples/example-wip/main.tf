@@ -25,9 +25,9 @@ module "network" {
     repo = "terraform-yacloud-modules/terraform-yandex-vpc"
   }
 
-  azs = ["ru-central1-a"]
+  azs = ["ru-central1-a", "ru-central1-b", "ru-central1-d"]
 
-  private_subnets = [["10.4.0.0/24"]]
+  private_subnets = [["10.3.0.0/24"], ["10.4.0.0/24"], ["10.5.0.0/24"]]
 
   create_vpc         = true
   create_nat_gateway = true
@@ -165,9 +165,95 @@ module "alb" {
   ]
 
   listeners = {
+    http2https = {
+      address = "ipv4pub"
+      zone_id = "ru-central1-a"
+      ports   = ["80"]
+      type    = "redirect"
+      tls     = false
+      cert    = {}
+      backend = {
+        name   = "app"
+        port   = 8080
+        weight = 100
+        http2  = true
+        target_group_ids = [
+          module.instance_group.target_group_id
+        ]
+        health_check = {
+          timeout                 = "30s"
+          interval                = "60s"
+          interval_jitter_percent = 0
+          healthy_threshold       = 1
+          unhealthy_threshold     = 1
+          healthcheck_port        = 8080
+          http = {
+            path = "/"
+          }
+        }
+      }
+    }
+    http = {
+      address = "ipv4prv"
+      zone_id = "ru-central1-a"
+      ports   = ["8080"]
+      type    = "http"
+      tls     = false
+      cert    = {}
+      authority = "domain.com"
+      backend = {
+        name   = "app"
+        port   = 8080
+        weight = 100
+        http2  = true
+        target_group_ids = [
+          module.instance_group.target_group_id
+        ]
+        health_check = {
+          timeout                 = "30s"
+          interval                = "60s"
+          interval_jitter_percent = 0
+          healthy_threshold       = 1
+          unhealthy_threshold     = 1
+          healthcheck_port        = 8080
+          http = {
+            path = "/"
+          }
+        }
+      }
+    }
+    http2 = {
+      address = "ipv4prv"
+      zone_id          = "ru-central1-a"
+      ports            = ["8081"]
+      tls              = false
+      type             = "http2"
+      cert             = {}
+      authority        = "domain.com"
+      backend          = {
+        name   = "app"
+        port   = 8080
+        weight = 100
+        http2  = true
+        target_group_ids = [
+          module.instance_group.target_group_id
+        ]
+        health_check = {
+          timeout                 = "30s"
+          interval                = "60s"
+          interval_jitter_percent = 0
+          healthy_threshold       = 1
+          unhealthy_threshold     = 1
+          healthcheck_port        = 8080
+          http = {
+            path = "/"
+          }
+        }
+      }
+    }
     https = {
       address = "ipv4prv"
-      zone_id = "ru-central1-b"
+      zone_id = "ru-central1-a"
       ports   = ["8082"]
       type    = "http"
       tls     = true
