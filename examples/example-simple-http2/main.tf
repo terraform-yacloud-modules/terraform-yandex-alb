@@ -131,8 +131,8 @@ module "alb" {
     }
   ]
 
-  create_pip   = true
-  pip_zone_id  = "ru-central1-a"
+  create_pip  = true
+  pip_zone_id = "ru-central1-a"
 
   listeners = {
     web = {

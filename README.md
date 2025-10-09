@@ -50,7 +50,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_create_pip"></a> [create\_pip](#input\_create\_pip) | If true, public IP will be created | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | ALB description | `string` | `""` | no |
-| <a name="input_discard_rules"></a> [discard\_rules](#input\_discard\_rules) | List of logs discard rules | <pre>object({<br>    http_codes          = optional(list(string), [])<br>    http_code_intervals = optional(number)<br>    grpc_codes          = optional(list(string), [])<br>  })</pre> | `null` | no |
+| <a name="input_discard_rules"></a> [discard\_rules](#input\_discard\_rules) | List of logs discard rules | <pre>object({<br/>    http_codes          = optional(list(string), [])<br/>    http_code_intervals = optional(number)<br/>    grpc_codes          = optional(list(string), [])<br/>  })</pre> | `null` | no |
 | <a name="input_enable_logs"></a> [enable\_logs](#input\_enable\_logs) | Set to true to disable Cloud Logging for the balancer | `bool` | `true` | no |
 | <a name="input_external_ipv4_address"></a> [external\_ipv4\_address](#input\_external\_ipv4\_address) | External IPv4 address for the load balancer | `string` | `null` | no |
 | <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | Folder ID | `string` | `null` | no |
@@ -62,7 +62,7 @@ No modules.
 | <a name="input_pip_zone_id"></a> [pip\_zone\_id](#input\_pip\_zone\_id) | Public IP zone | `string` | `"ru-central1-a"` | no |
 | <a name="input_region_id"></a> [region\_id](#input\_region\_id) | ID of the availability zone where the ALB resides | `string` | `null` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | A list of ID's of security groups attached to the ALB | `list(string)` | `[]` | no |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | `map` | `{}` | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | <pre>list(object({<br/>    zone_id         = string<br/>    id              = string<br/>    disable_traffic = bool<br/>  }))</pre> | `[]` | no |
 
 ## Outputs
 

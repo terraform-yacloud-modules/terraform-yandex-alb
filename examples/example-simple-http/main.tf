@@ -160,14 +160,14 @@ module "alb" {
       authority = "test.apatsev.org.ru"
       modify_request_headers = [
         {
-          name    = "X-Forwarded-For"
-          append  = "192.168.1.1"
+          name   = "X-Forwarded-For"
+          append = "192.168.1.1"
         }
       ]
       modify_response_headers = [
         {
-          name    = "X-Cache"
-          append  = "HIT"
+          name   = "X-Cache"
+          append = "HIT"
         }
       ]
       backend = {

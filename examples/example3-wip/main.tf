@@ -151,7 +151,7 @@ resource "null_resource" "wait_for_certificate" {
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
+    command     = <<-EOT
       while true; do
         status=$(yc cm certificate get --id ${self.triggers.certificate_id} --format json | jq -r '.status')
         if [ "$status" == "VALID" ]; then
@@ -186,11 +186,11 @@ module "alb" {
 
   listeners = {
     https = {
-      address = "ipv4pub"
-      zone_id = "ru-central1-b"
-      ports   = ["443"]
-      type    = "http"
-      tls     = true
+      address   = "ipv4pub"
+      zone_id   = "ru-central1-b"
+      ports     = ["443"]
+      type      = "http"
+      tls       = true
       authority = "test.apatsev.org.ru"
       cert = {
         type   = "existing"

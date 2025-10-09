@@ -166,12 +166,12 @@ module "alb" {
 
   listeners = {
     http = {
-      address = "ipv4prv"
-      zone_id = "ru-central1-a"
-      ports   = ["8080"]
-      type    = "http"
-      tls     = false
-      cert    = {}
+      address   = "ipv4prv"
+      zone_id   = "ru-central1-a"
+      ports     = ["8080"]
+      type      = "http"
+      tls       = false
+      cert      = {}
       authority = "domain.com"
       backend = {
         name   = "app"
@@ -195,14 +195,14 @@ module "alb" {
       }
     }
     http2 = {
-      address = "ipv4prv"
-      zone_id          = "ru-central1-a"
-      ports            = ["8081"]
-      tls              = false
-      type             = "http2"
-      cert             = {}
-      authority        = "domain.com"
-      backend          = {
+      address   = "ipv4prv"
+      zone_id   = "ru-central1-a"
+      ports     = ["8081"]
+      tls       = false
+      type      = "http2"
+      cert      = {}
+      authority = "domain.com"
+      backend = {
         name   = "app"
         port   = 8080
         weight = 100
