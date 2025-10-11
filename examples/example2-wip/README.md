@@ -13,7 +13,7 @@ terraform apply
 
 Note that this example may create resources which can cost money. Run `terraform destroy` when you don't need these resources.
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -57,7 +57,7 @@ No inputs.
 | <a name="output_domain_com_certificate_id"></a> [domain\_com\_certificate\_id](#output\_domain\_com\_certificate\_id) | ID of the self-managed certificate for domain-com |
 | <a name="output_instance_group_id"></a> [instance\_group\_id](#output\_instance\_group\_id) | Compute instance group ID |
 | <a name="output_target_group_id"></a> [target\_group\_id](#output\_target\_group\_id) | Target group ID |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 ## License
 
