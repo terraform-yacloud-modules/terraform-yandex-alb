@@ -10,7 +10,7 @@ to give users references for how to use the module(s) as well as testing/validat
 module. If contributing to the project, please be sure to make any appropriate updates to the relevant examples to allow
 maintainers to test your changes and to keep the examples up to date for users. Thank you!
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -71,7 +71,7 @@ No modules.
 | <a name="output_id"></a> [id](#output\_id) | Application Load Balancer ID |
 | <a name="output_load_balancer_ip"></a> [load\_balancer\_ip](#output\_load\_balancer\_ip) | IP address of the created load balancer |
 | <a name="output_name"></a> [name](#output\_name) | Application Load Balancer name |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 ## License
 
