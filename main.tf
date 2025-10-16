@@ -159,6 +159,16 @@ resource "yandex_alb_load_balancer" "main" {
       }
     }
   }
+
+  dynamic "timeouts" {
+    for_each = var.timeouts == null ? [] : [var.timeouts]
+    content {
+      create = try(timeouts.value.create, null)
+      update = try(timeouts.value.update, null)
+      delete = try(timeouts.value.delete, null)
+    }
+  }
+
 }
 
 resource "yandex_alb_virtual_host" "main" {
@@ -202,6 +212,17 @@ resource "yandex_alb_virtual_host" "main" {
     # TODO: temporary unsupported
     # grpc_route
   }
+
+
+  dynamic "timeouts" {
+    for_each = var.timeouts == null ? [] : [var.timeouts]
+    content {
+      create = try(timeouts.value.create, null)
+      update = try(timeouts.value.update, null)
+      delete = try(timeouts.value.delete, null)
+    }
+  }
+
 }
 
 resource "yandex_alb_http_router" "main" {
@@ -213,6 +234,16 @@ resource "yandex_alb_http_router" "main" {
   description = var.description
   folder_id   = var.folder_id
   labels      = var.labels
+
+  dynamic "timeouts" {
+    for_each = var.timeouts == null ? [] : [var.timeouts]
+    content {
+      create = try(timeouts.value.create, null)
+      update = try(timeouts.value.update, null)
+      delete = try(timeouts.value.delete, null)
+    }
+  }
+
 }
 
 resource "yandex_alb_backend_group" "http" {
@@ -258,6 +289,16 @@ resource "yandex_alb_backend_group" "http" {
     # TODO: temporary unsupported
     # tls {}
   }
+
+  dynamic "timeouts" {
+    for_each = var.timeouts == null ? [] : [var.timeouts]
+    content {
+      create = try(timeouts.value.create, null)
+      update = try(timeouts.value.update, null)
+      delete = try(timeouts.value.delete, null)
+    }
+  }
+
 }
 
 resource "yandex_alb_backend_group" "streams" {
@@ -297,6 +338,16 @@ resource "yandex_alb_backend_group" "streams" {
     # TODO: temporary unsupported
     # tls {}
   }
+
+  dynamic "timeouts" {
+    for_each = var.timeouts == null ? [] : [var.timeouts]
+    content {
+      create = try(timeouts.value.create, null)
+      update = try(timeouts.value.update, null)
+      delete = try(timeouts.value.delete, null)
+    }
+  }
+
 }
 
 # TODO: temporary unsupported

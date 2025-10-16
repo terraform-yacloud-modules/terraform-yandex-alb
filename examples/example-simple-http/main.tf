@@ -194,4 +194,11 @@ module "alb" {
     }
 
   }
+
+  timeouts = {
+    create = "40m"
+    update = "40m"
+    delete = "40m"
+  }
+
 }
