@@ -63,6 +63,7 @@ No modules.
 | <a name="input_region_id"></a> [region\_id](#input\_region\_id) | ID of the availability zone where the ALB resides | `string` | `null` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | A list of ID's of security groups attached to the ALB | `list(string)` | `[]` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | List of subnets | <pre>list(object({<br/>    zone_id         = string<br/>    id              = string<br/>    disable_traffic = bool<br/>  }))</pre> | `[]` | no |
+| <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | Timeout settings for cluster operations | <pre>object({<br/>    create = optional(string)<br/>    update = optional(string)<br/>    delete = optional(string)<br/>  })</pre> | `null` | no |
 
 ## Outputs
 
