@@ -133,11 +133,12 @@ module "alb" {
 
   listeners = {
     https = {
-      address = "ipv4prv"
-      zone_id = "ru-central1-b"
-      ports   = ["443"]
-      type    = "http"
-      tls     = true
+      address   = "ipv4prv"
+      zone_id   = "ru-central1-b"
+      ports     = ["443"]
+      type      = "http"
+      tls       = true
+      authority = "domain.com"
       cert = {
         type   = "existing"
         ids    = [module.self_managed.self_managed_certificates["domain-com"].id]
