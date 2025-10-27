@@ -1,7 +1,7 @@
 data "yandex_client_config" "client" {}
 
 module "network" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v1.0.0"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v3.0.0"
 
   folder_id = data.yandex_client_config.client.folder_id
 
@@ -20,7 +20,7 @@ module "network" {
 
 
 module "self_managed" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git?ref=v1.0.0"
 
   self_managed = {
     domain-com = {
@@ -46,7 +46,7 @@ module "iam_accounts" {
 }
 
 module "instance_group" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git?ref=v1.0.0"
 
   zones = ["ru-central1-a"]
 
