@@ -33,9 +33,9 @@ Note that this example may create resources which can cost money. Run `terraform
 |------|--------|---------|
 | <a name="module_alb"></a> [alb](#module\_alb) | ../.. | n/a |
 | <a name="module_iam_accounts"></a> [iam\_accounts](#module\_iam\_accounts) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account | v1.0.0 |
-| <a name="module_instance_group"></a> [instance\_group](#module\_instance\_group) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git | n/a |
-| <a name="module_network"></a> [network](#module\_network) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git | v1.0.0 |
-| <a name="module_self_managed"></a> [self\_managed](#module\_self\_managed) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git | n/a |
+| <a name="module_instance_group"></a> [instance\_group](#module\_instance\_group) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git | v1.0.0 |
+| <a name="module_network"></a> [network](#module\_network) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git | v3.0.0 |
+| <a name="module_self_managed"></a> [self\_managed](#module\_self\_managed) | git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git | v1.0.0 |
 
 ## Resources
 

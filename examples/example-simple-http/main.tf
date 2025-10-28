@@ -1,7 +1,7 @@
 data "yandex_client_config" "client" {}
 
 module "network" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v1.0.0"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v3.0.0"
 
   folder_id = data.yandex_client_config.client.folder_id
 
@@ -33,14 +33,14 @@ module "iam_accounts" {
 }
 
 module "address" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-address.git"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-address.git?ref=v2.0.0"
 
   name    = "nlb-pip"
   zone_id = "ru-central1-a"
 }
 
 module "instance_group" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git?ref=v1.0.0"
 
   zones = ["ru-central1-a"]
 
