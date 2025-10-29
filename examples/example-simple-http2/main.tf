@@ -101,7 +101,7 @@ module "instance_group" {
 }
 
 module "self_managed" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git?ref=v1.0.0"
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git?ref=v2.0.0"
 
   self_managed = {
     domain-com = {
