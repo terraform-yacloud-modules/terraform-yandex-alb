@@ -138,6 +138,7 @@ module "alb" {
     web = {
       type      = "http2"
       address   = "ipv4pub"
+      zone_id   = "ru-central1-a"
       ports     = [443]
       tls       = true
       authority = "domain.com"
@@ -182,13 +183,6 @@ module "alb" {
           append = "DENY"
         }
       ]
-    }
-
-    redirect = {
-      type    = "redirect"
-      address = "ipv4pub"
-      ports   = [80]
-      tls     = false
     }
   }
 

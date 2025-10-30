@@ -168,7 +168,7 @@ module "alb" {
     http = {
       address   = "ipv4prv"
       zone_id   = "ru-central1-a"
-      ports     = ["8080"]
+      ports     = [8080]
       type      = "http"
       tls       = false
       cert      = {}
@@ -197,7 +197,7 @@ module "alb" {
     http2 = {
       address   = "ipv4prv"
       zone_id   = "ru-central1-a"
-      ports     = ["8081"]
+      ports     = [8081]
       tls       = false
       type      = "http2"
       cert      = {}
@@ -226,7 +226,7 @@ module "alb" {
     https = {
       address = "ipv4prv"
       zone_id = "ru-central1-a"
-      ports   = ["8082"]
+      ports   = [8082]
       type    = "http"
       tls     = true
       cert = {
@@ -260,7 +260,7 @@ module "alb" {
     https2 = {
       address = "ipv4pub"
       zone_id = "ru-central1-a"
-      ports   = ["443"]
+      ports   = [443]
       type    = "http2"
       tls     = true
       cert = {
