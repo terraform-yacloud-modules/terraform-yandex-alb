@@ -114,7 +114,7 @@ resource "yandex_alb_load_balancer" "main" {
 
       # TLS HTTP
       dynamic "tls" {
-        for_each = l.value["type"] == "http" && l.value["tls"] ? [1] : []
+        for_each = l.value["type"] == "http" && l.value["tls"] && l.value["cert"] != null ? [1] : []
         content {
           default_handler {
             http_handler {
@@ -130,7 +130,7 @@ resource "yandex_alb_load_balancer" "main" {
 
       # TLS HTTP2
       dynamic "tls" {
-        for_each = l.value["type"] == "http2" && l.value["tls"] ? [1] : []
+        for_each = l.value["type"] == "http2" && l.value["tls"] && l.value["cert"] != null ? [1] : []
         content {
           default_handler {
             http_handler {
@@ -149,12 +149,14 @@ resource "yandex_alb_load_balancer" "main" {
 
       # TLS Stream
       dynamic "tls" {
-        for_each = l.value["type"] == "stream" && l.value["tls"] ? [1] : []
+        for_each = l.value["type"] == "stream" && l.value["tls"] && l.value["cert"] != null ? [1] : []
         content {
-          stream_handler {
-            backend_group_id = "TODO"
+          default_handler {
+            stream_handler {
+              backend_group_id = "TODO"
+            }
+            certificate_ids = [yandex_cm_certificate.main[l.key].id]
           }
-          certificate_ids = [yandex_cm_certificate.main[l.key].id]
         }
       }
     }
