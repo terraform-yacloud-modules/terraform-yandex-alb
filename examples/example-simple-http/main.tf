@@ -132,7 +132,7 @@ module "dns_recordset" {
 module "alb" {
   source = "../.."
 
-  name   = "example"
+  name   = "my-alb-http"
   labels = {}
 
   folder_id = data.yandex_client_config.client.folder_id
