@@ -32,6 +32,13 @@ module "iam_accounts" {
 
 }
 
+module "address" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-address.git?ref=v2.0.0"
+
+  name    = "nlb-pip"
+  zone_id = "ru-central1-a"
+}
+
 module "instance_group" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git?ref=v1.0.0"
 
@@ -123,6 +130,8 @@ module "alb" {
 
   network_id = module.network.vpc_id
 
+  external_ipv4_address = module.address.external_ipv4_address
+
   subnets = [
     {
       zone_id         = module.network.private_subnets[0].zone
@@ -135,7 +144,7 @@ module "alb" {
   pip_zone_id = "ru-central1-a"
 
   listeners = {
-    web = {
+    http2 = {
       type      = "http2"
       address   = "ipv4pub"
       zone_id   = "ru-central1-a"
@@ -159,11 +168,12 @@ module "alb" {
         ]
 
         health_check = {
-          timeout             = "30s"
-          interval            = "60s"
-          healthy_threshold   = 1
-          unhealthy_threshold = 1
-
+          timeout                 = "30s"
+          interval                = "60s"
+          interval_jitter_percent = 0
+          healthy_threshold       = 1
+          unhealthy_threshold     = 1
+          healthcheck_port        = 80
           http = {
             path = "/"
           }
