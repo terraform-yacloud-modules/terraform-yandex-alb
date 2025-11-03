@@ -151,7 +151,19 @@ module "alb" {
       ports     = [443]
       tls       = true
       authority = "domain.com"
+      modify_request_headers = [
+        {
+          name    = "X-Forwarded-Proto"
+          replace = "https"
+        }
+      ]
 
+      modify_response_headers = [
+        {
+          name   = "X-Frame-Options"
+          append = "DENY"
+        }
+      ]
       cert = {
         type   = "existing"
         ids    = [module.self_managed.self_managed_certificates["domain-com"].id]
@@ -179,20 +191,6 @@ module "alb" {
           }
         }
       }
-
-      modify_request_headers = [
-        {
-          name    = "X-Forwarded-Proto"
-          replace = "https"
-        }
-      ]
-
-      modify_response_headers = [
-        {
-          name   = "X-Frame-Options"
-          append = "DENY"
-        }
-      ]
     }
   }
 
