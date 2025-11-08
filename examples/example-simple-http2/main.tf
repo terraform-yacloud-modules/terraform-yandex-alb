@@ -123,10 +123,8 @@ module "alb" {
   source = "../.."
 
   name   = "my-alb-http2"
-  labels = {}
 
   folder_id = data.yandex_client_config.client.folder_id
-  region_id = "ru-central1"
 
   network_id = module.network.vpc_id
 
@@ -141,29 +139,29 @@ module "alb" {
   ]
 
   create_pip  = true
-  pip_zone_id = "ru-central1-a"
+  pip_zone_id = "ru-central1-b"
 
   listeners = {
     http2 = {
-      type      = "http2"
       address   = "ipv4pub"
-      zone_id   = "ru-central1-a"
+      zone_id   = "ru-central1-b"
       ports     = [443]
+      type      = "http2"
       tls       = true
       authority = "domain.com"
       modify_request_headers = [
         {
-          name    = "X-Forwarded-Proto"
-          replace = "https"
+          name   = "X-Forwarded-For"
+          append = "192.168.1.1"
+        }
+      ]
+      modify_response_headers = [
+        {
+          name   = "X-Cache"
+          append = "HIT"
         }
       ]
 
-      modify_response_headers = [
-        {
-          name   = "X-Frame-Options"
-          append = "DENY"
-        }
-      ]
       cert = {
         type   = "existing"
         ids    = [module.self_managed.self_managed_certificates["domain-com"].id]
@@ -192,6 +190,7 @@ module "alb" {
         }
       }
     }
+
   }
 
   timeouts = {

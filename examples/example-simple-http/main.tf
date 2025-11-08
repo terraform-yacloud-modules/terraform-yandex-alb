@@ -107,36 +107,24 @@ module "instance_group" {
   depends_on = [module.iam_accounts]
 }
 
-module "dns_zone" {
+module "self_managed" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-certificate-manager.git?ref=v2.0.0"
 
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-dns.git//modules/zone?ref=v1.0.0"
-
-  name        = "my-private-zone"
-  description = "desc"
-
-  zone             = "apatsev.org.ru."
-  is_public        = true
-  private_networks = [module.network.vpc_id]
-}
-
-module "dns_recordset" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-dns.git//modules/recordset?ref=v1.0.0"
-
-  zone_id = module.dns_zone.id
-  name    = "test.apatsev.org.ru."
-  type    = "A"
-  ttl     = 200
-  data    = [module.address.external_ipv4_address]
+  self_managed = {
+    domain-com = {
+      description = "self-managed domain certificate from file"
+      certificate = file("cert.pem")
+      private_key = file("key.pem")
+    }
+  }
 }
 
 module "alb" {
   source = "../.."
 
   name   = "my-alb-http"
-  labels = {}
 
   folder_id = data.yandex_client_config.client.folder_id
-  region_id = "ru-central1"
 
   network_id = module.network.vpc_id
 
@@ -150,14 +138,17 @@ module "alb" {
     }
   ]
 
+  create_pip  = true
+  pip_zone_id = "ru-central1-b"
+
   listeners = {
     http = {
       address   = "ipv4pub"
       zone_id   = "ru-central1-b"
-      ports     = [80]
+      ports     = [443]
       type      = "http"
       tls       = false
-      authority = "test.apatsev.org.ru"
+      authority = "domain.com"
       modify_request_headers = [
         {
           name   = "X-Forwarded-For"
@@ -170,6 +161,13 @@ module "alb" {
           append = "HIT"
         }
       ]
+
+      cert = {
+        type   = "existing"
+        ids    = [module.self_managed.self_managed_certificates["domain-com"].id]
+        domain = "domain.com"
+      }
+
       backend = {
         name   = "app"
         port   = 80
