@@ -122,7 +122,7 @@ module "self_managed" {
 module "alb" {
   source = "../.."
 
-  name   = "my-alb-http"
+  name = "my-alb-http"
 
   folder_id = data.yandex_client_config.client.folder_id
 
