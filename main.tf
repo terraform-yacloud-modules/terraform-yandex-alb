@@ -153,8 +153,8 @@ resource "yandex_alb_load_balancer" "main" {
         content {
           default_handler {
             stream_handler {
-              backend_group_id = "TODO"
-            }
+                backend_group_id = yandex_alb_backend_group.streams[each.key].id
+              }
             certificate_ids = [yandex_cm_certificate.main[l.key].id]
           }
         }
