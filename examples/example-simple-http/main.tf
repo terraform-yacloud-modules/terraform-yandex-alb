@@ -122,7 +122,7 @@ module "self_managed" {
 module "alb" {
   source = "../.."
 
-  name = "my-alb-http"
+  name = "my-alb-http-http2"
 
   folder_id = data.yandex_client_config.client.folder_id
 
@@ -145,7 +145,7 @@ module "alb" {
     http = {
       address   = "ipv4pub"
       zone_id   = "ru-central1-b"
-      ports     = [443]
+      ports     = [80]
       type      = "http"
       tls       = false
       authority = "domain.com"
@@ -191,6 +191,54 @@ module "alb" {
       }
     }
 
+    http2 = {
+      address   = "ipv4pub"
+      zone_id   = "ru-central1-b"
+      ports     = [443]
+      type      = "http2"
+      tls       = true
+      authority = "domain.com"
+      modify_request_headers = [
+        {
+          name   = "X-Forwarded-For"
+          append = "192.168.1.1"
+        }
+      ]
+      modify_response_headers = [
+        {
+          name   = "X-Cache"
+          append = "HIT"
+        }
+      ]
+
+      cert = {
+        type   = "existing"
+        ids    = [module.self_managed.self_managed_certificates["domain-com"].id]
+        domain = "domain.com"
+      }
+
+      backend = {
+        name   = "app"
+        port   = 80
+        weight = 100
+        http2  = true
+        target_group_ids = [
+          module.instance_group.target_group_id
+        ]
+
+        health_check = {
+          timeout                 = "30s"
+          interval                = "60s"
+          interval_jitter_percent = 0
+          healthy_threshold       = 1
+          unhealthy_threshold     = 1
+          healthcheck_port        = 80
+          http = {
+            path = "/"
+          }
+        }
+      }
+    }
   }
 
   timeouts = {
