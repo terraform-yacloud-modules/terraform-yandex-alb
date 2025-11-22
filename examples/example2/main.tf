@@ -163,6 +163,9 @@ module "alb" {
     }
   ]
 
+  create_pip  = true
+  pip_zone_id = "ru-central1-b"
+
   listeners = {
     https = {
       address   = "ipv4prv"

@@ -152,9 +152,11 @@ module "self_managed" {
 module "alb" {
   source = "../.."
 
-  name = "my-alb-http-http2"
+  name   = "my-alb-http-http2"
+  labels = {}
 
   folder_id = data.yandex_client_config.client.folder_id
+  region_id = "ru-central1"
 
   network_id = module.network.vpc_id
   security_group_ids = [

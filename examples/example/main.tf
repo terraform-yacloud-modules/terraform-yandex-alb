@@ -173,6 +173,18 @@ module "alb" {
       tls       = false
       cert      = {}
       authority = "domain.com"
+      modify_request_headers = [
+        {
+          name   = "X-Forwarded-For"
+          append = "192.168.1.1"
+        }
+      ]
+      modify_response_headers = [
+        {
+          name   = "X-Cache"
+          append = "HIT"
+        }
+      ]
       backend = {
         name   = "app"
         port   = 8080
@@ -202,6 +214,18 @@ module "alb" {
       type      = "http2"
       cert      = {}
       authority = "domain.com"
+      modify_request_headers = [
+        {
+          name   = "X-Forwarded-For"
+          append = "192.168.1.1"
+        }
+      ]
+      modify_response_headers = [
+        {
+          name   = "X-Cache"
+          append = "HIT"
+        }
+      ]
       backend = {
         name   = "app"
         port   = 8080
@@ -235,6 +259,18 @@ module "alb" {
         domain = "domain.com"
       }
       authority = "domain.com"
+      modify_request_headers = [
+        {
+          name   = "X-Forwarded-For"
+          append = "192.168.1.1"
+        }
+      ]
+      modify_response_headers = [
+        {
+          name   = "X-Cache"
+          append = "HIT"
+        }
+      ]
       backend = {
         name   = "app"
         port   = 8080
@@ -269,6 +305,18 @@ module "alb" {
         domain = "domain.com"
       }
       authority = "domain.com"
+      modify_request_headers = [
+        {
+          name   = "X-Forwarded-For"
+          append = "192.168.1.1"
+        }
+      ]
+      modify_response_headers = [
+        {
+          name   = "X-Cache"
+          append = "HIT"
+        }
+      ]
       backend = {
         name   = "app"
         port   = 8080
