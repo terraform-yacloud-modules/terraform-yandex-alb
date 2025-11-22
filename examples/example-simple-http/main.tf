@@ -18,6 +18,36 @@ module "network" {
   create_nat_gateway = true
 }
 
+module "seggroups" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-security-group.git?ref=v1.0.0"
+
+  folder_id   = data.yandex_client_config.client.folder_id
+  vpc_id      = module.network.vpc_id
+  blank_name  = "your-security-group-name"
+  description = "Your security group description"
+  labels = {
+    "key1" = "value1"
+    "key2" = "value2"
+  }
+
+  ingress_rules = {
+    "rule1" = {
+      protocol       = "TCP"
+      description    = "Allow TCP traffic from 0.0.0.0/0"
+      from_port      = 0
+      to_port        = 65535
+      v4_cidr_blocks = ["0.0.0.0/0"]
+    }
+    "rule2" = {
+      protocol       = "TCP"
+      description    = "Allow health check traffic from ALB ranges"
+      from_port      = 0
+      to_port        = 65535
+      v4_cidr_blocks = ["198.18.235.0/24", "198.18.248.0/24"]
+    }
+  }
+}
+
 module "iam_accounts" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
 
@@ -127,6 +157,9 @@ module "alb" {
   folder_id = data.yandex_client_config.client.folder_id
 
   network_id = module.network.vpc_id
+  security_group_ids = [
+    module.seggroups.id
+  ]
 
   external_ipv4_address = module.address.external_ipv4_address
 
