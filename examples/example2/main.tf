@@ -1,5 +1,19 @@
 data "yandex_client_config" "client" {}
 
+module "iam_accounts" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
+
+  name = "iam-yandex-compute-instance-group"
+  folder_roles = [
+    "editor"
+  ]
+  cloud_roles              = []
+  enable_static_access_key = false
+  enable_api_key           = false
+  enable_account_key       = false
+
+}
+
 module "network" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v3.0.0"
 
@@ -60,20 +74,6 @@ module "self_managed" {
   }
 }
 
-module "iam_accounts" {
-  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
-
-  name = "iam-yandex-compute-instance-group"
-  folder_roles = [
-    "editor"
-  ]
-  cloud_roles              = []
-  enable_static_access_key = false
-  enable_api_key           = false
-  enable_account_key       = false
-
-}
-
 module "instance_group" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-instance-group.git?ref=v1.0.0"
 
@@ -102,7 +102,7 @@ module "instance_group" {
     tcp_options = {
       port = 22
     }
- }
+  }
 
   platform_id   = "standard-v3"
   cores         = 2
@@ -139,7 +139,12 @@ module "instance_group" {
     type = "network-ssd"
   }
 
-  depends_on = [module.iam_accounts]
+  depends_on = [
+    module.iam_accounts,
+    module.network,
+    module.seggroups,
+    module.self_managed,
+  ]
 }
 
 module "alb" {
