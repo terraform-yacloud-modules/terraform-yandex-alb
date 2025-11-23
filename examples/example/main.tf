@@ -1,6 +1,5 @@
 data "yandex_client_config" "client" {}
 
-
 module "iam_accounts" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
 
@@ -12,7 +11,13 @@ module "iam_accounts" {
   enable_static_access_key = false
   enable_api_key           = false
   enable_account_key       = false
+}
 
+module "address" {
+  source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-address.git?ref=v2.0.0"
+
+  name    = "nlb-pip"
+  zone_id = "ru-central1-a"
 }
 
 module "network" {
@@ -128,7 +133,11 @@ module "instance_group" {
     type = "network-ssd"
   }
 
-  depends_on = [module.iam_accounts]
+  depends_on = [
+    module.iam_accounts,
+    module.network,
+    module.seggroups,
+  ]
 }
 
 module "self_managed" {
@@ -149,12 +158,15 @@ module "alb" {
   name   = "example"
   labels = {}
 
+  folder_id = data.yandex_client_config.client.folder_id
   region_id = "ru-central1"
 
   network_id = module.network.vpc_id
   security_group_ids = [
     module.seggroups.id
   ]
+
+  external_ipv4_address = module.address.external_ipv4_address
 
   subnets = [
     {
@@ -171,7 +183,6 @@ module "alb" {
       ports     = [8080]
       type      = "http"
       tls       = false
-      cert      = {}
       authority = "domain.com"
       modify_request_headers = [
         {
@@ -185,6 +196,7 @@ module "alb" {
           append = "HIT"
         }
       ]
+      cert = {}
       backend = {
         name   = "app"
         port   = 8080
@@ -206,6 +218,7 @@ module "alb" {
         }
       }
     }
+
     http2 = {
       address   = "ipv4prv"
       zone_id   = "ru-central1-a"
