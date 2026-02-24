@@ -1,3 +1,7 @@
+## v1.63.0 - 2026-02-24
+### Miscellaneous
+- cfeb000 build(deps): bump kvendingoldo/git-flow-action from 2.2.0 to 2.16.0 ([#134](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/134))
+
 ## v1.62.0
 ## v1.61.0
 ## v1.60.0
