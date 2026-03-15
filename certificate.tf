@@ -24,7 +24,7 @@ resource "tls_self_signed_cert" "self_signed" {
 
 resource "yandex_cm_certificate" "main" {
   for_each = {
-    for k, v in var.listeners : k => v if v["tls"] && contains(["self_signed", "letsencrypt"], try(v["cert"]["type"], ""))
+    for k, v in var.listeners : k => v if v["tls"] && contains(["self_signed", "letsencrypt"], coalesce(try(v["cert"]["type"], "none"), "none"))
   }
 
   name        = format("%s-%s", var.name, each.key)

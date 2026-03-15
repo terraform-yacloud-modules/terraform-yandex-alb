@@ -111,7 +111,7 @@ module "instance_group" {
   service_account_id = module.iam_accounts.id
   ssh_user           = "ubuntu"
   generate_ssh_key   = false
-  ssh_pubkey         = "~/.ssh/id_rsa.pub"
+  ssh_pubkey         = "~/.ssh/id_ed25519.pub"
 
   user_data = <<-EOF
         #cloud-config
