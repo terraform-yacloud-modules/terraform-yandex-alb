@@ -1,3 +1,7 @@
+## v1.65.0 - 2026-03-15
+### Miscellaneous
+- 8db3c46 Fix coalesce in cert type check when cert is empty ([#136](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/136))
+
 ## v1.64.0 - 2026-03-02
 ### Miscellaneous
 - 317d611 build(deps): bump hashicorp/setup-terraform from 3 to 4 ([#135](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/135))
