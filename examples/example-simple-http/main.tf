@@ -1,5 +1,8 @@
 data "yandex_client_config" "client" {}
 
+provider "yandex" {
+}
+
 module "iam_accounts" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-iam.git//modules/iam-account?ref=v1.0.0"
 
@@ -24,7 +27,7 @@ module "address" {
 module "network" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-vpc.git?ref=v3.0.0"
 
-  folder_id = data.yandex_client_config.client.folder_id
+  folder_id = coalesce(var.folder_id, data.yandex_client_config.client.folder_id)
 
   blank_name = "alb-vpc-nat-gateway"
   labels = {
@@ -42,7 +45,7 @@ module "network" {
 module "seggroups" {
   source = "git::https://github.com/terraform-yacloud-modules/terraform-yandex-security-group.git?ref=v1.0.0"
 
-  folder_id   = data.yandex_client_config.client.folder_id
+  folder_id   = coalesce(var.folder_id, data.yandex_client_config.client.folder_id)
   vpc_id      = module.network.vpc_id
   blank_name  = "your-security-group-name"
   description = "Your security group description"
@@ -163,7 +166,7 @@ module "alb" {
   name   = "my-alb-http-http2"
   labels = {}
 
-  folder_id = data.yandex_client_config.client.folder_id
+  folder_id = coalesce(var.folder_id, data.yandex_client_config.client.folder_id)
   region_id = "ru-central1"
 
   network_id = module.network.vpc_id
