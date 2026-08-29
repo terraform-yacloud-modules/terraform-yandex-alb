@@ -1,3 +1,7 @@
+## v1.66.0 - 2026-08-29
+### Miscellaneous
+- 70addd6 build(deps): bump actions/cache from 5.0.3 to 5.0.5 ([#138](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/138))
+
 ## v1.65.0 - 2026-03-15
 ### Miscellaneous
 - 8db3c46 Fix coalesce in cert type check when cert is empty ([#136](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/136))
