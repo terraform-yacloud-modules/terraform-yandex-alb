@@ -1,3 +1,7 @@
+## v1.69.0 - 2026-09-01
+### Bug Fixes
+- d0aa329 fix: передача folder_id в примере с приоритетом tfvars над YC_FOLDER_ID ([#139](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/139))
+
 ## v1.68.0 - 2026-09-01
 ### Miscellaneous
 - cd6199d build(deps): bump actions/checkout from 6 to 7 ([#140](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/140))
