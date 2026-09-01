@@ -1,3 +1,7 @@
+## v1.67.0 - 2026-09-01
+### Miscellaneous
+- 5522cbe build(deps): bump actions/cache from 5.0.5 to 6.1.0 ([#141](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/141))
+
 ## v1.66.0 - 2026-08-29
 ### Miscellaneous
 - 70addd6 build(deps): bump actions/cache from 5.0.3 to 5.0.5 ([#138](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/138))
