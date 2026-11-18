@@ -1,3 +1,7 @@
+## v1.70.0 - 2026-11-18
+### Miscellaneous
+- c927105 ci: run semver job only on push to main ([#143](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/143))
+
 ## v1.69.0 - 2026-09-01
 ### Bug Fixes
 - d0aa329 fix: передача folder_id в примере с приоритетом tfvars над YC_FOLDER_ID ([#139](https://github.com/terraform-yacloud-modules/terraform-yandex-alb/pull/139))
